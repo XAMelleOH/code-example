@@ -1,0 +1,80 @@
+<div class="wrapper__inner goat">
+  <div class="goat__header">
+    <div class="goat__expand" data-cy="goat__expand" data-test="goat__expand--btn" (click)="isExpandedList = !isExpandedList">
+      <span class="icon-expand" [ngClass]="{ active: isExpandedList }"></span>
+    </div>
+    <h3 (click)="isExpandedList = !isExpandedList">
+      {{ 'HEARINGDIARY.GOALS_AND_TASKS.TITLE' | translate }}
+
+      <ng-container *ngIf="(explorationPeriod$ | async) as explPeriod">
+        <span *ngIf="explPeriod?.explorationPeriodId" data-cy="hearing-goals-stats">
+          ({{ explPeriod?.completedTasksCount }}/{{ explPeriod?.totalTasksCount}})
+        </span>
+      </ng-container>
+    </h3>
+  </div>
+
+  <div class="goat__content" data-cy="goat__content" *ngIf="isExpandedList">
+
+    <ng-container *ngIf="explorationPeriod$ | async as expPeriod; else empty">
+      <ng-container *ngIf="expPeriod?.explorationPeriodId; else empty">
+        <hearingapps-goals-and-tasks-list
+          [data]="assignedGoals$ | async"
+          (removed$)="beforeRemoveTaskHandler($event)"
+          [hasPartner]="expPeriod?.startedWithCoPa"
+        ></hearingapps-goals-and-tasks-list>
+        <span data-cy="showAddTaskPopupButton" (click)="showAddTaskPopup()">
+          {{ 'HEARINGDIARY.GOALS_AND_TASKS.ADD_TASK.BUTTON' | translate }}
+        </span>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #empty>
+      <div class="goat__content--empty" data-cy="goatContentEmpty">
+        {{ 'HEARINGDIARY.GOALS_AND_TASKS.NOT_SET_UP' | translate }}<br/>
+        <button
+          class="db-btn db-btn--secondary-naked"
+          data-cy="showAddTaskPopupButton"
+          data-test="showAddTaskPopupButton"
+          (click)="startDefiningTasks()"
+        >
+          {{ 'HEARINGDIARY.GOALS_AND_TASKS.ADD_TASK.BUTTON_ALTERNATIVE' | translate }}
+        </button>
+      </div>
+    </ng-template>
+
+  </div>
+</div>
+
+<hearingapps-goals-and-tasks-popup
+  *ngIf="isShowAddTaskPopup"
+  [explorationPeriodId]="explorationPeriodId"
+  [goals]="goalsWithPreselection$ | async"
+  [withCopa]="copaInfo != null"
+  (added$)="addTasks($event)"
+  (saved$)="saveTasks($event)"
+  (closed$)="isShowAddTaskPopup = false">
+</hearingapps-goals-and-tasks-popup>
+
+<hearingapps-copa-onboarding-popup
+  *ngIf="isShowOnBoardingPopup"
+  [clientName]="getFullName(client)"
+  (closed)="isShowOnBoardingPopup = false"
+  (continue)="showGoalsAndTasks($event)"
+></hearingapps-copa-onboarding-popup>
+
+<hearingapps-preselected-tasks-popup
+  *ngIf="isShowPreselectedTasksPopup"
+  [tasks]="preselectedTasks$ | async"
+  [client]="getFullName(client)"
+  [copa]="getFullName(copaInfo)"
+  (finished$)="savePreselectedTasks()"
+  (closed$)="isShowPreselectedTasksPopup = false"
+  (customize$)="showTaskCustomizationPopup()"
+></hearingapps-preselected-tasks-popup>
+
+<hearingapps-remove-task-confirm-popup
+  *ngIf="isShowRemoveConfirmationPopup"
+  (removed$)="removeTask()"
+  (closed$)="onCancelRemove()">
+</hearingapps-remove-task-confirm-popup>

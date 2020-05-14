@@ -1,0 +1,62 @@
+@import 'theme';
+@import 'fonts';
+
+.directions {
+  padding: 0 0 15px;
+  border-bottom: 1px solid $borderColor;
+  margin: -15px -15px 15px;
+}
+
+.set-up-wrapper {
+  padding: 0 15px 15px 15px;
+  height: calc(80vh - 300px);
+  overflow: auto;
+}
+
+.db-btn {
+  margin-top: 15px;
+}
+
+.hint {
+  margin-top: 15px;
+}
+
+:host ::ng-deep {
+  .ui-accordion-header {
+    outline: 0;
+    margin-bottom: 20px;
+    a {
+      font-weight: bold;
+      padding-left: 0;
+      color: $textColor;
+      .icon {
+        @extend .db-icon;
+        @extend .db-icon-triangle-down;
+        transform: rotate(270deg);
+        &:before {
+          font-size: 36px;
+        }
+      }
+    }
+
+    &.ui-state-active {
+      a {
+        .icon {
+          transform: rotate(0deg);
+        }
+      }
+    }
+  }
+
+  .ui-accordion-content {
+    padding: 0 0 15px 28px;
+  }
+}
+
+.checkbox-wrapper {
+  width: 90%;
+  display: flex;
+  padding: 0 0 20px 10px;
+
+  label { margin-left: 10px; cursor: pointer; }
+}

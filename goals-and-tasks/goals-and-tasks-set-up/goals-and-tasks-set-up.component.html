@@ -1,0 +1,39 @@
+<div class="directions">{{ 'HEARINGDIARY.GOALS_AND_TASKS.ADD_TASK.DESCRIPTION' | translate }}</div>
+
+<div class="set-up-wrapper">
+
+  <div class="set-up-goals-and-tasks" data-cy="setUpGoat" *ngIf="controls.length > 0">
+
+    <form *ngIf="form" [formGroup]="form" class="settings-form">
+
+      <p-accordion [multiple]="true">
+
+        <p-accordionTab *ngFor="let goal of currentGoals" [selected]="true" data-test="goal-accordion">
+
+          <p-header><span class="icon"></span> {{ goal?.text }}</p-header>
+
+          <ng-container *ngFor="let task of goal.tasks">
+
+            <div class="checkbox-wrapper" data-cy="checkboxWrapper">
+              <p-checkbox
+                [inputId]="task.tag"
+                [formControlName]="task.tag"
+                label=""
+                binary="true"
+                [attr.data-cy]="task.tag + '-checkbox'"
+              ></p-checkbox>
+              <label [for]="task.tag">{{ task.text }}</label>
+            </div>
+
+          </ng-container>
+
+        </p-accordionTab>
+
+      </p-accordion>
+
+    </form>
+
+  </div>
+
+
+</div>
